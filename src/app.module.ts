@@ -1,10 +1,22 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Module } from '@nestjs/common'
+import { RoomsController } from './controllers/v1/rooms.controller'
+import {
+  LocalRoomsDataSourceImpl,
+  RoomsDataSourceToken,
+} from './data/data-sources/rooms.datasource'
+import { RoomsServiceImpl, RoomsServiceToken } from './domain/services/rooms.service'
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [RoomsController],
+  providers: [
+    {
+      provide: RoomsDataSourceToken,
+      useClass: LocalRoomsDataSourceImpl,
+    },
+    {
+      provide: RoomsServiceToken,
+      useClass: RoomsServiceImpl,
+    },
+  ],
 })
 export class AppModule {}
