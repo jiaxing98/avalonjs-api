@@ -1,8 +1,27 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Logger, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+  const globalPrefix = 'api';
+  app.setGlobalPrefix(globalPrefix);
+  app.useGlobalPipes(new ValidationPipe());
+
+  const config = new DocumentBuilder()
+    .setTitle('Avalonjs')
+    .setDescription(
+      'A social deduction board game where 5 to 10 players are secretly divided into the loyal servants of Arthur (Good) and the minions of Mordred (Evil). ',
+    )
+    .setVersion('1.0')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('swagger', app, documentFactory);
+
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  Logger.log(`🚀 Application is running on: http://localhost:${port}/swagger`);
 }
+
 bootstrap();
