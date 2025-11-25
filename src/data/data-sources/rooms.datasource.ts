@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { Player } from '../../domain/entities/player.entity'
 import { Room } from '../../domain/entities/room.entity'
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager'
 
 export const RoomsDataSourceToken = Symbol('RoomsDataSource')
 
@@ -15,48 +16,43 @@ export interface RoomsDataSource {
 }
 
 @Injectable()
-export class LocalRoomsDataSourceImpl implements RoomsDataSource {
-  private rooms: Room[]
-  readonly maxCapacity: number = 10
-
-  constructor() {
-    this.rooms = []
-  }
+export class RoomsDataSourceRedisImpl implements RoomsDataSource {
+  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
   async create(room: Room): Promise<void> {
-    if (this.rooms.length >= this.maxCapacity) {
-      throw Error('No more capacity.')
-    }
+    await this.cacheManager.set('key', 'value')
 
-    this.rooms.push(room)
+    // if (this.rooms.length >= this.maxCapacity) {
+    //   throw Error('No more capacity.')
+    // }
+    // this.rooms.push(room)
   }
 
   async findAll(): Promise<Room[]> {
-    return this.rooms
+    // return this.rooms
+    return []
   }
 
   async remove(roomUID: string): Promise<void> {
-    this.rooms = this.rooms.filter((x) => x.id !== roomUID)
+    // this.rooms = this.rooms.filter((x) => x.id !== roomUID)
   }
 
   async getPlayers(roomUID: string): Promise<Player[]> {
-    const room = this.rooms.find((x) => x.id === roomUID)
-    if (!room) throw Error(`Room ${roomUID} not found.`)
-
-    return room.players
+    // const room = this.rooms.find((x) => x.id === roomUID)
+    // if (!room) throw Error(`Room ${roomUID} not found.`)
+    // return room.players
+    return []
   }
 
   async addPlayer(roomUID: string, player: Player): Promise<void> {
-    const room = this.rooms.find((x) => x.id === roomUID)
-    if (!room) throw Error(`Room ${roomUID} not found.`)
-
-    room.addPlayer(player)
+    // const room = this.rooms.find((x) => x.id === roomUID)
+    // if (!room) throw Error(`Room ${roomUID} not found.`)
+    // room.addPlayer(player)
   }
 
   async removePlayer(roomUID: string, playerUID: string): Promise<void> {
-    const room = this.rooms.find((x) => x.id === roomUID)
-    if (!room) throw Error(`Room ${roomUID} not found.`)
-
-    room.removePlayer(playerUID)
+    // const room = this.rooms.find((x) => x.id === roomUID)
+    // if (!room) throw Error(`Room ${roomUID} not found.`)
+    // room.removePlayer(playerUID)
   }
 }
