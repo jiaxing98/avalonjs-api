@@ -3,11 +3,13 @@ import { Player } from '../entities/player.entity'
 import { Room } from '../entities/room.entity'
 import { CreatePlayerDto } from 'src/data/dtos/create-player.dto'
 import { type RoomsDataSource, RoomsDataSourceToken } from 'src/data/data-sources/rooms.datasource'
+import { CreateRoomDto } from 'src/data/dtos/create-room.dto'
+import { randomUUID } from 'crypto'
 
 export const RoomsServiceToken = Symbol('RoomsService')
 
 export interface RoomsService {
-  create(dto: CreatePlayerDto): Promise<void>
+  create(dto: CreateRoomDto): Promise<void>
   findAll(): Promise<Room[]>
   remove(roomUID: string): Promise<void>
 
@@ -23,9 +25,10 @@ export class RoomsServiceImpl implements RoomsService {
     private readonly ds: RoomsDataSource
   ) {}
 
-  async create(dto: CreatePlayerDto): Promise<void> {
-    const host = new Player(dto.name, true)
-    await this.ds.create(new Room([host]))
+  async create(dto: CreateRoomDto): Promise<void> {
+    const host = new Player(dto.hostname, true)
+    const room = new Room({ uid: randomUUID().split('-').at(0)!, players: [host] })
+    await this.ds.create(room)
   }
 
   async findAll(): Promise<Room[]> {

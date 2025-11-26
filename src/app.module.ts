@@ -8,6 +8,8 @@ import { RoomsServiceImpl, RoomsServiceToken } from './domain/services/rooms.ser
 import { CacheModule } from '@nestjs/cache-manager'
 import KeyvRedis from '@keyv/redis'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { createClient } from 'redis'
+import { RedisModule } from './redis.module'
 
 @Module({
   imports: [
@@ -21,6 +23,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
         }
       },
     }),
+    RedisModule,
   ],
   controllers: [RoomsController],
   providers: [

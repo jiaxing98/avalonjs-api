@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post } from '@nestjs/common'
 import { type RoomsService, RoomsServiceToken } from '../../domain/services/rooms.service'
 import { CreatePlayerDto } from 'src/data/dtos/create-player.dto'
+import { CreateRoomDto } from 'src/data/dtos/create-room.dto'
 
 @Controller({
   path: 'rooms',
@@ -13,8 +14,8 @@ export class RoomsController {
   ) {}
 
   @Post()
-  async create(@Body() host: CreatePlayerDto) {
-    return await this.roomService.create(host)
+  async create(@Body() dto: CreateRoomDto) {
+    return await this.roomService.create(dto)
   }
 
   @Get()

@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { Player } from '../../domain/entities/player.entity'
 import { Room } from '../../domain/entities/room.entity'
-import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager'
+import { REDIS_CLIENT } from 'src/redis.module'
+import { type RedisClientType } from 'redis'
+import { plainToInstance } from 'class-transformer'
 
 export const RoomsDataSourceToken = Symbol('RoomsDataSource')
 
@@ -17,20 +19,18 @@ export interface RoomsDataSource {
 
 @Injectable()
 export class RoomsDataSourceRedisImpl implements RoomsDataSource {
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+  constructor(@Inject(REDIS_CLIENT) private redis: RedisClientType) {}
 
   async create(room: Room): Promise<void> {
-    await this.cacheManager.set('key', 'value')
-
-    // if (this.rooms.length >= this.maxCapacity) {
-    //   throw Error('No more capacity.')
-    // }
-    // this.rooms.push(room)
+    await this.redis.set(`room:${room.uid}`, JSON.stringify(room))
   }
 
   async findAll(): Promise<Room[]> {
-    // return this.rooms
-    return []
+    const keys = await this.redis.keys('room:*')
+    const rooms = (await Promise.all(keys.map((k) => this.redis.get(k))))
+      .filter((r): r is string => r !== null)
+      .map((r) => plainToInstance(Room, JSON.parse(r)))
+    return rooms
   }
 
   async remove(roomUID: string): Promise<void> {
