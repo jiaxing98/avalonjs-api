@@ -1,9 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import {
-  RoomsService,
-  RoomsServiceImpl,
-  RoomsServiceToken,
-} from '../../domain/services/rooms.service'
+import { RoomsService, RoomsServiceToken } from '../../domain/services/rooms.service'
 import { RoomsController } from './rooms.controller'
 
 describe('RoomsController', () => {

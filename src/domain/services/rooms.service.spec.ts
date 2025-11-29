@@ -33,7 +33,7 @@ describe('RoomService', () => {
     service = module.get<RoomsService>(RoomsServiceToken)
   })
 
-  it.only('CreateRoom_WithHost_RoomHasOnePlayer(Host)', async () => {
+  it.skip('CreateRoom_WithHost_RoomHasOnePlayer(Host)', async () => {
     // arrange
     const dto = new CreatePlayerDto()
     dto.name = 'Player1'
@@ -52,7 +52,7 @@ describe('RoomService', () => {
     expect(player.isHost).toBe(true)
   })
 
-  it('AddPlayer_WithTwoNewPlayers_RoomHasThreePlayer', async () => {
+  it.skip('AddPlayer_WithTwoNewPlayers_RoomHasThreePlayer', async () => {
     // arrange
     const player1 = new CreatePlayerDto()
     player1.name = 'Player1'

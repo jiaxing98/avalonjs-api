@@ -1,5 +1,5 @@
 {
-  "importOrderSortSpecifiers": true,
+  "plugins": ["prettier-plugin-organize-imports"],
   "printWidth": 100,
   "semi": false,
   "singleAttributePerLine": true,

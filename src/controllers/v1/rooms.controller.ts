@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post } from '@nestjs/common'
-import { type RoomsService, RoomsServiceToken } from '../../domain/services/rooms.service'
 import { CreatePlayerDto } from 'src/data/dtos/create-player.dto'
 import { CreateRoomDto } from 'src/data/dtos/create-room.dto'
+import { type RoomsService, RoomsServiceToken } from '../../domain/services/rooms.service'
 
 @Controller({
   path: 'rooms',

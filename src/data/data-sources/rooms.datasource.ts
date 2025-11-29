@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common'
+import { plainToInstance } from 'class-transformer'
+import { type RedisClientType } from 'redis'
+import { REDIS_CLIENT } from 'src/redis.module'
 import { Player } from '../../domain/entities/player.entity'
 import { Room } from '../../domain/entities/room.entity'
-import { REDIS_CLIENT } from 'src/redis.module'
-import { type RedisClientType } from 'redis'
-import { plainToInstance } from 'class-transformer'
 
 export const RoomsDataSourceToken = Symbol('RoomsDataSource')
 

@@ -1,14 +1,13 @@
+import KeyvRedis from '@keyv/redis'
+import { CacheModule } from '@nestjs/cache-manager'
 import { Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { RoomsController } from './controllers/v1/rooms.controller'
 import {
   RoomsDataSourceRedisImpl,
   RoomsDataSourceToken,
 } from './data/data-sources/rooms.datasource'
 import { RoomsServiceImpl, RoomsServiceToken } from './domain/services/rooms.service'
-import { CacheModule } from '@nestjs/cache-manager'
-import KeyvRedis from '@keyv/redis'
-import { ConfigModule, ConfigService } from '@nestjs/config'
-import { createClient } from 'redis'
 import { RedisModule } from './redis.module'
 
 @Module({

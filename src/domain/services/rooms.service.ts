@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common'
+import { randomUUID } from 'crypto'
+import { type RoomsDataSource, RoomsDataSourceToken } from 'src/data/data-sources/rooms.datasource'
+import { CreatePlayerDto } from 'src/data/dtos/create-player.dto'
+import { CreateRoomDto } from 'src/data/dtos/create-room.dto'
 import { Player } from '../entities/player.entity'
 import { Room } from '../entities/room.entity'
-import { CreatePlayerDto } from 'src/data/dtos/create-player.dto'
-import { type RoomsDataSource, RoomsDataSourceToken } from 'src/data/data-sources/rooms.datasource'
-import { CreateRoomDto } from 'src/data/dtos/create-room.dto'
-import { randomUUID } from 'crypto'
 
 export const RoomsServiceToken = Symbol('RoomsService')
 
