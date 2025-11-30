@@ -1,37 +1,62 @@
+import { shuffle } from 'src/utils/fisher-yates-shuffle'
+import { Player } from '../player.entity'
 import { Faction } from '../roles/role.entity'
-import { questMatrix, QuestMatrix } from './quest.entity'
+import { questMatrix, QuestMatrix, questRoleMatrix, QuestRoleMatrix } from './quest.entity'
+
+class QuestConfigs {
+  static MAX_QUEST: number = 5
+  static MAX_REJECTED_COUNT: number = 5
+  static MIN_PLAYER: number = 5
+  static MAX_PLAYER: number = 10
+  static QUEST: QuestMatrix = questMatrix
+  static QUEST_ROLES: QuestRoleMatrix = questRoleMatrix
+}
+
+export interface QuestManagerProps {
+  players: Player[]
+}
 
 export class QuestManager {
-  readonly MAX_QUEST: number = 5
-  readonly MAX_REJECTED_COUNT: number = 5
-  readonly MIN_PLAYER: number = 5
-  readonly MAX_PLAYER: number = 10
-  readonly QUEST_MATRIX: QuestMatrix
-
   currentQuest: number
   currentRejectedCount: number
-  numberOfPlayers: number
+  players: Player[]
 
   questSuccess: number
   questFailed: number
 
-  constructor() {
-    this.QUEST_MATRIX = questMatrix
-  }
-
-  start(numberOfPlayers: number) {
-    if (numberOfPlayers < this.MIN_PLAYER || numberOfPlayers > this.MAX_PLAYER) {
-      throw new Error(
-        `Invalid number of players: ${numberOfPlayers}. Must be between ${this.MIN_PLAYER} and ${this.MAX_PLAYER}.`
-      )
-    }
-
-    this.currentQuest = 0
+  constructor({ players }: QuestManagerProps) {
+    this.currentQuest = 1
     this.currentRejectedCount = 0
-    this.numberOfPlayers = numberOfPlayers
+    this.players = players
 
     this.questSuccess = 0
     this.questFailed = 0
+  }
+
+  get numberOfPlayers() {
+    return this.players.length
+  }
+
+  start() {
+    if (
+      this.numberOfPlayers < QuestConfigs.MIN_PLAYER ||
+      this.numberOfPlayers > QuestConfigs.MAX_PLAYER
+    ) {
+      throw new Error(
+        `Invalid number of players: ${this.numberOfPlayers}. Must be between ${QuestConfigs.MIN_PLAYER} and ${QuestConfigs.MAX_PLAYER}.`
+      )
+    }
+
+    this.assignRoles()
+  }
+
+  assignRoles() {
+    const roles = QuestConfigs.QUEST_ROLES[this.numberOfPlayers]
+    const shuffled = shuffle(roles)
+
+    this.players.forEach((x, i) => {
+      x.assignRole(shuffled[i])
+    })
   }
 
   nextTurn() {
@@ -46,11 +71,11 @@ export class QuestManager {
 
   rejectTeam(): boolean {
     this.currentRejectedCount += 1
-    return this.currentRejectedCount >= this.MAX_REJECTED_COUNT
+    return this.currentRejectedCount >= QuestConfigs.MAX_REJECTED_COUNT
   }
 
   embark(tokens: boolean[]): boolean {
-    const failRequired = this.QUEST_MATRIX[this.currentQuest][this.numberOfPlayers].failRequired
+    const failRequired = QuestConfigs.QUEST[this.currentQuest][this.numberOfPlayers].failRequired
 
     const success = tokens.filter((x) => x === false).length < failRequired
     return success
@@ -61,13 +86,14 @@ export class QuestManager {
   }
 
   endGame(): [boolean, Faction | undefined] {
-    const gameFinished = this.currentQuest >= this.MAX_QUEST
-    if (!gameFinished) return [false, undefined] as const
+    const gameFinished = this.currentQuest >= QuestConfigs.MAX_QUEST
 
-    const halfQuests = Math.ceil(this.MAX_QUEST / 2)
-    if (this.questSuccess >= halfQuests) return [true, 'good'] as const
-    if (this.questFailed >= halfQuests) return [true, 'evil'] as const
+    const halfQuests = Math.ceil(QuestConfigs.MAX_QUEST / 2)
+    const goodWon = this.questSuccess >= halfQuests
+    const evilWon = this.questFailed >= halfQuests
 
-    return [true, undefined] as const
+    const winner = goodWon ? 'good' : evilWon ? 'evil' : undefined
+
+    return [gameFinished, winner] as const
   }
 }

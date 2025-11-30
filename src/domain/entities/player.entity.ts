@@ -6,7 +6,7 @@ export class Player {
   private readonly name: string
   private _isHost: boolean
 
-  public role: Role | undefined
+  role: Role | undefined
 
   constructor(name: string, isHost = false) {
     this.id = randomUUID()

@@ -9,6 +9,8 @@ export abstract class Role {
   faction: Faction
   leader: boolean
   team: boolean
+  withLadyOfTheLake: boolean
+  usedLadyOfTheLake: boolean
 
   constructor({ faction }: RoleProps) {
     this.faction = faction
