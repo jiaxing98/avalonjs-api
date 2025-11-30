@@ -1,18 +1,19 @@
+import { randomUUID } from 'crypto'
 import { Player } from './player.entity'
+import { QuestManager } from './quest-manager/quest-manager.entity'
 
 interface RoomProps {
-  uid: string
   players: Player[]
 }
 
 export class Room {
-  static MIN_PLAYER = 5
-  static MAX_PLAYER = 10
-
   uid: string
+  questManager: QuestManager
   players: Player[]
 
-  constructor(props: RoomProps) {
-    Object.assign(this, props)
+  constructor({ players }: RoomProps) {
+    this.uid = randomUUID().split('-').at(0)!
+    this.questManager = new QuestManager()
+    this.players = players
   }
 }

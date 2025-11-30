@@ -1,44 +1,36 @@
 import { randomUUID } from 'crypto'
-
-export const roles = [
-  'Merlin',
-  'Percival',
-  'Servants of Arthur',
-  'Assassin',
-  'Morgana',
-  'Mordred',
-  'Oberon',
-  'Minions of Mordred',
-] as const
-
-export type Role = (typeof roles)[number]
+import { Role } from './roles/role.entity'
 
 export class Player {
-  private readonly _id: string
-  private readonly _name: string
+  private readonly id: string
+  private readonly name: string
   private _isHost: boolean
 
   public role: Role | undefined
 
   constructor(name: string, isHost = false) {
-    this._id = randomUUID()
-    this._name = name
+    this.id = randomUUID()
+    this.name = name
     this._isHost = isHost
-  }
-
-  get id(): string {
-    return this._id
-  }
-
-  get name(): string {
-    return this._name
-  }
-
-  get isHost(): boolean {
-    return this._isHost
   }
 
   assignRole(role: Role) {
     this.role = role
+  }
+
+  assignLeader() {
+    if (!this.role) return
+    this.role.leader = true
+  }
+
+  assignTeam() {
+    if (!this.role) return
+    this.role.team = true
+  }
+
+  resetTeamAssignment() {
+    if (!this.role) return
+    this.role.leader = false
+    this.role.team = false
   }
 }

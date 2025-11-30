@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { randomUUID } from 'crypto'
 import { type RoomsDataSource, RoomsDataSourceToken } from 'src/data/data-sources/rooms.datasource'
 import { CreatePlayerDto } from 'src/data/dtos/create-player.dto'
 import { CreateRoomDto } from 'src/data/dtos/create-room.dto'
@@ -27,7 +26,7 @@ export class RoomsServiceImpl implements RoomsService {
 
   async create(dto: CreateRoomDto): Promise<void> {
     const host = new Player(dto.hostname, true)
-    const room = new Room({ uid: randomUUID().split('-').at(0)!, players: [host] })
+    const room = new Room({ players: [host] })
     await this.ds.create(room)
   }
 

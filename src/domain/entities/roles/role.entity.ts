@@ -7,6 +7,8 @@ interface RoleProps {
 
 export abstract class Role {
   faction: Faction
+  leader: boolean
+  team: boolean
 
   constructor({ faction }: RoleProps) {
     this.faction = faction
